@@ -1,4 +1,4 @@
-FROM python:3.9.5-bullseye
+FROM python:3.9-bullseye
 
 ENV FOO="bar"
 
