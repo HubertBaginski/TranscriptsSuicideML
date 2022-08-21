@@ -4,7 +4,7 @@ ENV FOO="bar"
 
 WORKDIR /deployments
 
-COPY docker .
+COPY . .
 
 RUN pip install -r requirements.txt
 
