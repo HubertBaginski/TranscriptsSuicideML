@@ -1,4 +1,4 @@
-FROM 3.9.5-bullseye
+FROM 3.9-bullseye
 
 ENV FOO="bar"
 
