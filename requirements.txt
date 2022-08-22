@@ -1,4 +1,4 @@
 ktrain==0.31.7
 torch==1.9.1
-tensorflow==2.5.1
+tensorflow-gpu==2.5.1
 openpyxl==3.0.10
