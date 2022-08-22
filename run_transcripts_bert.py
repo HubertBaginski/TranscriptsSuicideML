@@ -47,10 +47,10 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size',
                         help='Batch size, if sequence length is large set this lower. The bigger the fast model '
                              'training is finished but more memory is required.',
-                        default=8)
+                        type=int, default=8)
     parser.add_argument('--lr', help='Learning rate for training.', default=1.5e-5)
-    parser.add_argument('--epochs', help='Number of epochs for training.', default=1)
-    parser.add_argument('--text_length', help='Maximum number of tokens for each sequence.', default=512)
+    parser.add_argument('--epochs', help='Number of epochs for training.', type=int, default=1)
+    parser.add_argument('--text_length', help='Maximum number of tokens for each sequence.', type=int, default=512)
     parser.add_argument('--checkpoint_folder', help='Path to checkpoint folder, epoch weights are stored there.',
                         default="../checkpoints")
     args = parser.parse_args()
