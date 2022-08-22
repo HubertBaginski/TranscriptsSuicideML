@@ -1,6 +1,4 @@
-FROM python:3.9-bullseye
-
-ENV FOO="bar"
+FROM tensorflow/tensorflow:2.5.1-gpu
 
 WORKDIR /deployments
 
