@@ -17,7 +17,7 @@ session = tf.compat.v1.Session(config=config)
 tf.compat.v1.keras.backend.set_session(session)
 
 
-def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, epochs, weights_file):
+def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, epochs, weights_file=None):
     set_seeds(1)
     df_var = process_transcripts(variable_code)
     X_train, X_test, y_train, y_test = train_test_split(df_var.text
@@ -38,38 +38,39 @@ def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, e
         lr=lr, epoch=epochs, seed=1, text_length=maxlen,
         model_name=model_name, checkpoint_folder=checkpoint_folder)
 
-    original_learner[4].load_weights(checkpoint_folder + weights_file)
+    if weights_file:
+        original_learner[4].load_weights(checkpoint_folder + weights_file)
 
-    learner_reloaded = get_learner(original_learner[4], train_data=original_learner[2],
-                                          val_data=original_learner[3], batch_size=2)
+        learner_reloaded = get_learner(original_learner[4], train_data=original_learner[2],
+                                              val_data=original_learner[3], batch_size=2)
 
-    model_ = learner_reloaded
-    t_ = original_learner[1]
+        model_ = learner_reloaded
+        t_ = original_learner[1]
 
-    set_seeds(1)
-    ## PREDICT ON VALIDATION SET
-    pred = predict_test(X_val.values, model_,
-                        t=t_)
-    val = t_.preprocess_test(X_val.values, y_val.values)
-    model_.validate(val_data=val)
-    mat = get_performance(y_val.values, pred[0], classNames2)
+        set_seeds(1)
+        ## PREDICT ON VALIDATION SET
+        pred = predict_test(X_val.values, model_,
+                            t=t_)
+        val = t_.preprocess_test(X_val.values, y_val.values)
+        model_.validate(val_data=val)
+        mat = get_performance(y_val.values, pred[0], classNames2)
 
-    ## PREDICT ON TEST SET
-    set_seeds(1)
-    pred = predict_test(X_test.values, model_, t=t_)
-    predictor = pred[1]
-    test = t_.preprocess_test(X_test.values, y_test.values)
-    model_.validate(val_data=test, class_names=list(classNames2))
-    mat = get_performance(y_test.values, pred[0], classNames2)
+        ## PREDICT ON TEST SET
+        set_seeds(1)
+        pred = predict_test(X_test.values, model_, t=t_)
+        predictor = pred[1]
+        test = t_.preprocess_test(X_test.values, y_test.values)
+        model_.validate(val_data=test, class_names=list(classNames2))
+        mat = get_performance(y_test.values, pred[0], classNames2)
 
-    # saving the ktrain model to disk ~500MB
-    predictor.save(Path(checkpoint_folder / variable_code))
+        # saving the ktrain model to disk ~500MB
+        predictor.save(Path(checkpoint_folder / variable_code))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run BERT training.")
     parser.add_argument('--variable_code', help='Variable code which should be used for training, '
                                                 'check /utils/variable_codes.py', default='MF02_01')
-    parser.add_argument('--weights_file', help='Name of the weights file.', default='weights.hdf5')
+    parser.add_argument('--weights_file', help='Name of the weights file, if provided do eval.')
     parser.add_argument('--model_name', help='Which transformers model should be used for training classifier',
                         default='bert-base-uncased')
     parser.add_argument('--batch_size',
