@@ -11,4 +11,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["/bin/bash", "-c", "python3 run_transcripts_bert.py $APP_PARAMS"]
+ENTRYPOINT ["/bin/bash", "-c", "python3 predict_transcripts_bert.py $APP_PARAMS"]
