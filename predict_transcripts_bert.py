@@ -39,7 +39,7 @@ def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, e
         model_name=model_name, checkpoint_folder=checkpoint_folder)
 
     if weights_file:
-        original_learner[4].load_weights(checkpoint_folder + weights_file)
+        original_learner[4].load_weights(Path(checkpoint_folder) / weights_file)
 
         learner_reloaded = get_learner(original_learner[4], train_data=original_learner[2],
                                               val_data=original_learner[3], batch_size=2)
