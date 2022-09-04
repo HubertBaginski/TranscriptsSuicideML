@@ -85,4 +85,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     train_bert_model(variable_code=args.variable_code, model_name=args.model_name,
                      maxlen=args.text_length, checkpoint_folder=args.checkpoint_folder,
-                     lr=args.lr, epochs=args.epochs)
+                     lr=args.lr, epochs=args.epochs,weights_file=args.weights_file)
