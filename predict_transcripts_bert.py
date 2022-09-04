@@ -64,7 +64,7 @@ def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, e
         mat = get_performance(y_test.values, pred[0], classNames2)
 
         # saving the ktrain model to disk ~500MB
-        predictor.save(Path(checkpoint_folder / variable_code))
+        predictor.save(Path(checkpoint_folder) / variable_code)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run BERT training.")
