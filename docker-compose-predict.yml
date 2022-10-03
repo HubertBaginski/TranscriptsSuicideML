@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  transcripts-BERT:
+    image: hubertbaginski/transcripts:latest
+    container_name: transcripts
+    environment:
+      - APP_PARAMS=--batch_size 4 --epochs 1 --checkpoint_folder /checkpoint_folder --weights_file weights-13.hdf5 --variable_$
+    shm_size: '2gb'
+    volumes:
+      - /home/cept/hubert/checkpoints:/checkpoint_folder
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
