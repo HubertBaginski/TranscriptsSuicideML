@@ -21,6 +21,6 @@ You can also set up the environment locally by installing the requirements via `
 
 - Todo:
   - add the jupyternotebook (cleaned up since we moved a lot of the functions into separate files)
-  - remove data folder
+  - remove data folder (or add a readme to explain the files if we can keep it public)
   - set dockerhub image to public
   - set docker repo to public
