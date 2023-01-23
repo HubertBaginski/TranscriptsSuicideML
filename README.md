@@ -38,3 +38,4 @@ The trained models can be found and loaded via their variable codes in dockerhub
   - remove data folder (or add a readme to explain the files if we can keep it public)
   - set dockerhub image to public
   - set docker repo to public
+  - add descirption info to the huzggignface models (update with link to repo and paper)
