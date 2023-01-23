@@ -25,9 +25,8 @@ def set_seeds(seed: int = 1):
     tf.random.set_seed(seed)
 
 
-def train_learner(X_train, y_train, X_val: list, y_val: list,
-                  lr: float, epoch: int, seed: int, text_length: int, model_name: str, checkpoint_folder: str=None,
-                  batch_size=8):
+def train_learner(X_train, y_train, X_val: list, y_val: list, lr: float, epoch: int, seed: int,
+                  text_length: int, model_name: str, checkpoint_folder: str = None, batch_size=8):
     """
     Trains a model.
     :param X_train: list of training texts
@@ -40,6 +39,7 @@ def train_learner(X_train, y_train, X_val: list, y_val: list,
     :param text_length: maxmimum length of sequences
     :param model_name: name of transformer model
     :param checkpoint_folder: path to checkpoint folder
+    :param batch_size: number of samples passed to training in one batch
     :return:
     """
     class_names = list(set(y_train))
@@ -84,4 +84,5 @@ def predict_test(X_test, learner, t):
     """
     predictor = ktrain.get_predictor(learner.model, preproc=t)
     pred = predictor.predict(X_test)
-    return (np.squeeze(pred), predictor)
+    return np.squeeze(pred), predictor
+
