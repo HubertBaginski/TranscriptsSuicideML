@@ -19,6 +19,20 @@ The training will create one weights file for each epoch and print the evaluatio
 
 You can also set up the environment locally by installing the requirements via `pip3 install -r requirments.txt`. Then you can use the scripts `run_transcripts_bert.py` for training and `predict_transcripts_bert.py` for inference. You can also work with the jupyter notebook that offers additional comments.
 
+The trained models can be found and loaded via their variable codes in dockerhub:
+
+ - https://huggingface.co/HubertBaginski/BERT_AU01_01
+ - https://huggingface.co/HubertBaginski/BERT_PS01
+ - https://huggingface.co/HubertBaginski/BERT_PR01_01
+ - https://huggingface.co/HubertBaginski/BERT_PO01_01
+ - https://huggingface.co/HubertBaginski/BERT_MF02_01
+ - https://huggingface.co/HubertBaginski/BERT_MF02_03
+ - https://huggingface.co/HubertBaginski/BERT_MF02_12
+ - https://huggingface.co/HubertBaginski/BERT_MF01
+ - https://huggingface.co/HubertBaginski/BERT_ID05_01
+ - https://huggingface.co/HubertBaginski/CS02_01
+
+
 - Todo:
   - add the jupyternotebook (cleaned up since we moved a lot of the functions into separate files)
   - remove data folder (or add a readme to explain the files if we can keep it public)
