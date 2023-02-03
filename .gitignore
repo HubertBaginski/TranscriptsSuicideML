@@ -1,1 +1,4 @@
 /venv/
+.Rproj.user
+figures/
+descriptive_stats_transcripts.Rmd
