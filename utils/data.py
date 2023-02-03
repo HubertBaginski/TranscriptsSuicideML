@@ -37,7 +37,7 @@ def process_transcripts(variable_code):
                             or "PM" in line and i in line and "•" in line:
                         check = True
                         break
-                if check == True:
+                if check is True:
                     continue
                 if len(line.strip()) < 4:
                     continue
@@ -61,30 +61,34 @@ def process_transcripts(variable_code):
 
     df_classes = df_classes.iloc[1:]
 
-    # select variable code
-    #variable_code = variable_codes.ALTERNATIVES_TO_SUICIDE.value
+    # check selected variable code mapping
+    #VariableCodes.ALTERNATIVES_TO_SUICIDE.value
 
     # upper case ID for Excel and extracted ID's to match
     df_classes.AC01_01 = df_classes.AC01_01.str.upper()
     # combine extracted text and variable codes from excel, by joining on ID
     fin = pd.merge(df, df_classes, on="AC01_01")
-    print("joined", fin.shape)
-    # select revelant columns
+    print(f"Number of samples from joined texts and Excel  by ID: {fin.shape}")
+    # select relevant columns
     df_var = fin.filter(items=["AC01_01", "text", variable_code, "CO01"])
     # filter for coder -9 for consistently labeled training data
     df_var = df_var[df_var["CO01"] == -9]
     # remove texts that dont have a assigned number (-9)
     df_var = df_var[df_var[variable_code] != -9]
-    print("only coder -9", df_var.shape)
-    print(Counter(df_var[variable_code]).most_common())
+    print(f"Number of samples with only coder -9: {df_var.shape}")
+    print(f"Frequencies of labels: {Counter(df_var[variable_code]).most_common()}")
 
     if variable_code == VariableCodes.PROBLEM_SOLUTION.value:
-        df_var[variable_code] = df_var[variable_code].replace(1,"Problem").replace(2,"Solution").replace(3, "Both").replace(4, "Neither")
+        df_var[variable_code] = df_var[variable_code].replace(1, "Problem").\
+            replace(2, "Solution").replace(3, "Both").replace(4, "Neither")
     elif variable_code == VariableCodes.MAIN_FOCUS.value:
-        df_var[variable_code] = df_var[variable_code].replace(1, "completed").replace(2, "attempted"). \
+        df_var[variable_code] = df_var[variable_code].replace(1, "completed").replace(2,
+                                                                                      "attempted"). \
             replace(3, "ideation").replace(4, "mur_sui_indi").replace(5, "mass_mur_sui"). \
-            replace(6, "assisted").replace(7, "cluster").replace(9, "policy_pvt").replace(10, "research"). \
-            replace(11, "legal_issues").replace(12, "healing_story").replace(13, "other").replace(14, "advocacy"). \
+            replace(6, "assisted").replace(7, "cluster").replace(9, "policy_pvt").replace(10,
+                                                                                          "research"). \
+            replace(11, "legal_issues").replace(12, "healing_story").replace(13, "other").replace(
+            14, "advocacy"). \
             replace(15, "prevention")
     else:
         df_var[variable_code] = df_var[variable_code].replace(1, "no").replace(2, "yes")
