@@ -1,0 +1,69 @@
+Classification task,Categories,Model,Precision,Recall,F1
+Suicide death,Yes,Tf-idf & SVM,0.87,0.85,0.86
+Suicide death,Yes,BERT,0.82,0.92,0.87
+Suicide death,No,Tf-idf & SVM,0.81,0.84,0.83
+Suicide death,No,BERT,0.87,0.75,0.8
+Celebrity suicide,Yes,Tf-idf & SVM,0.86,0.91,0.88
+Celebrity suicide,Yes,BERT,0.95,0.85,0.89
+Celebrity suicide,No,Tf-idf & SVM,0.99,0.98,0.98
+Celebrity suicide,No,BERT,0.98,0.99,0.98
+Alternatives to suicide,Yes,Tf-idf & SVM,0.56,0.71,0.62
+Alternatives to suicide,Yes,BERT,0.58,0.54,0.56
+Alternatives to suicide,No,Tf-idf & SVM,0.94,0.88,0.91
+Alternatives to suicide,No,BERT,0.91,0.92,0.91
+Monocausality,Yes,Tf-idf & SVM,0.53,0.55,0.54
+Monocausality,Yes,BERT,0.75,0.33,0.46
+Monocausality,No,Tf-idf & SVM,0.94,0.94,0.94
+Monocausality,No,BERT,0.92,0.99,0.95
+Positive outcome crisis,Yes,Tf-idf & SVM,0.86,0.51,0.64
+Positive outcome crisis,Yes,BERT,0.8,0.43,0.56
+Positive outcome crisis,No,Tf-idf & SVM,0.96,0.99,0.98
+Positive outcome crisis,No,BERT,0.95,0.99,0.97
+Healing story,Yes,Tf-idf & SVM,0.58,0.5,0.54
+Healing story,Yes,BERT,0.64,0.42,0.51
+Healing story,No,Tf-idf & SVM,0.96,0.97,0.96
+Healing story,No,BERT,0.95,0.98,0.97
+Suicidal ideation,Yes,Tf-idf & SVM,0.43,0.43,0.43
+Suicidal ideation,Yes,BERT,0.64,0.34,0.44
+Suicidal ideation,No,Tf-idf & SVM,0.94,0.94,0.94
+Suicidal ideation,No,BERT,0.94,0.98,0.96
+Enhancing myths,Yes,Tf-idf & SVM,0.52,0.54,0.53
+Enhancing myths,Yes,BERT,0.67,0.14,0.24
+Enhancing myths,No,Tf-idf & SVM,0.97,0.97,0.97
+Enhancing myths,No,BERT,0.95,1,0.97
+Problem vs Solution,Problem,Tf-idf & SVM,0.93,0.86,0.9
+Problem vs Solution,Problem,BERT,0.94,0.91,0.92
+Problem vs Solution,Solution,Tf-idf & SVM,0.69,0.66,0.68
+Problem vs Solution,Solution,BERT,0.77,0.66,0.71
+Problem vs Solution,Both,Tf-idf & SVM,0.49,0.63,0.55
+Problem vs Solution,Both,BERT,0.51,0.63,0.56
+Problem vs Solution,Neither,Tf-idf & SVM,1,0.71,0.83
+Problem vs Solution,Neither,BERT,0.94,0.91,0.92
+Main focus,Advocacy,Tf-idf & SVM,0.66,0.69,0.67
+Main focus,Advocacy,BERT,0.72,0.71,0.72
+Main focus,Assisted suicide,Tf-idf & SVM,1,0.8,0.89
+Main focus,Assisted suicide,BERT,0.88,0.7,0.78
+Main focus,Attempted suicide,Tf-idf & SVM,0.54,0.62,0.58
+Main focus,Attempted suicide,BERT,0.79,0.92,0.85
+Main focus,Cluster,Tf-idf & SVM,0.75,0.5,0.6
+Main focus,Cluster,BERT,1,0.33,0.5
+Main focus,Suicide death,Tf-idf & SVM,0.73,0.62,0.67
+Main focus,Suicide death,BERT,0.75,0.76,0.76
+Main focus,Healing story,Tf-idf & SVM,0.38,0.79,0.51
+Main focus,Healing story,BERT,0.47,0.64,0.55
+Main focus,Suicidal Ideation,Tf-idf & SVM,0,0,0
+Main focus,Suicidal Ideation,BERT,0,0,0
+Main focus,Legal issues,Tf-idf & SVM,0.63,0.45,0.52
+Main focus,Legal issues,BERT,0.55,0.47,0.51
+Main focus,Mass murder,Tf-idf & SVM,0.79,0.68,0.73
+Main focus,Mass murder,BERT,0.72,0.75,0.74
+Main focus,Murder suicide,Tf-idf & SVM,0.86,0.8,0.83
+Main focus,Murder suicide,BERT,0.76,0.85,0.8
+Main focus,Policy,Tf-idf & SVM,0.62,0.61,0.62
+Main focus,Policy,BERT,0.75,0.77,0.76
+Main focus,Prevention,Tf-idf & SVM,0.31,0.56,0.39
+Main focus,Prevention,BERT,0.47,0.52,0.49
+Main focus,Research,Tf-idf & SVM,0.75,0.72,0.74
+Main focus,Research,BERT,0.76,0.76,0.76
+Main focus,Other,Tf-idf & SVM,0.22,0.22,0.22
+Main focus,Other,BERT,0.06,0.04,0.05
