@@ -13,15 +13,15 @@ options(scipen=10)
 library(tidyverse)
 library(ggpubr) #for multiple plots together
 require(data.table) #string manipulations 
+library(RColorBrewer)
 rm(list=ls())
 ```
 
 
 ```{r figure settings, include=FALSE}
-cols = c("#88CCEE",  "#332288", "#44AA99",  '#DDCC77', "#117733", '#999933') #
-modelcols = c("Majority"= cols[1], "Tf-idf"=cols[2], "BERT"=cols[3])
+cols = c(rev(brewer.pal(12,"Set3")), "violetred4", "cornflowerblue")
 #text size
-s=7
+s=10
 # s = 5 #for paper png figures JMIR, 15 within Rstudio or for pdfs
 # change F1 to F subscript 1 in figures with facet_wrapt
 facet_labels <- as_labeller(c(Precision = "Precision", Recall = "Recall",F1="F[1]"), default = label_parsed)
@@ -42,8 +42,8 @@ macro = macro %>%
          Difficulty =  rep(rep(difficulty, each=3), 2)) #repeat per model (3) and per validation/test set  
 
 #load intra class data
-intra <- read.csv("results/Intraclass performance.csv")  %>% 
-   mutate(Model = factor(Model, levels =c("Tf-idf","BERT"), labels = c("Tf-idf","BERT")), 
+intra <- read.csv("results/Intraclass_performance.csv")  %>% 
+   mutate(Model = factor(Model, levels =c("Tf-idf & SVM","BERT"), labels = c("Tf-idf & SVM","BERT")), 
          Classification.task = factor(Classification.task, levels = order_tasks, labels = order_tasks, ordered = T), 
          Difficulty =  c(rep("Level 1", 2*2*2), rep("Level 2", 3*2*2), rep("Level 3", 3*2*2), rep("Level 4", 1*4*2), rep("Level 4", 1*14*2))) #always: variables*category*models(2).
 
@@ -60,79 +60,152 @@ ncat = ncat %>%
   slice(seq(1,nrow(ncat),2))
 ```
 
+```{r, load format data, results=FALSE, cache=TRUE}
+# format/select data for figures #####
 
-```{r, format/select data for figures, results=FALSE, cache=TRUE}
 #macro
 macro_plot = pivot_longer(macro, cols = c("Precision", "Recall", "F1", "Accuracy"), names_to = "Metric", values_to ="Score") %>% 
   mutate(Metric = factor(Metric, levels = c("Precision", "Recall", "F1", "Accuracy"), labels = c("Precision", "Recall", "F1", "Accuracy")))
+
+#intra
+intra_plot = pivot_longer(intra, cols = c("Precision", "Recall", "F1"), names_to = "Metric", values_to ="Score") %>% 
+  mutate(Metric = factor(Metric, levels = c("Precision", "Recall", "F1"), labels = c("Precision", "Recall", "F1")), 
+         Categories = factor(Categories))
 
 # sample sizes
 ncat_plot = pivot_longer(ncat, cols = c("Train", "Validation", "Test"), names_to = "dataset", values_to = "n") %>% 
   mutate(n = as.numeric(n), 
          dataset = as.factor(dataset), 
-         Classificationtask = as.factor(Classificationtask), 
-         Categories = as.factor(Categories))
+         Classificationtask = as.factor(Classificationtask))
+
+#calculate proportion per category across all three datasets (average)
+ncat_proportions = ncat_plot %>% 
+  group_by(Classificationtask, Categories) %>% 
+  summarise(total = sum(n)) %>%
+  mutate(proportion = total / sum(total)) %>% 
+  ungroup()
 ```
 
-```{r, figure macro, fig.height=4.5, fig.width=7}
+# Model comparison per task: macro-average
+
+```{r, macro plot, fig.height=4.5, fig.width=7}
 plot = ggplot(filter(macro_plot, Dataset == "Test"), aes(x=Metric, y = Score, fill=Model, colour = Model)) + #dataset and variables to plot
-  geom_bar(stat="identity", position = position_dodge2(width = 0.9))+
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(Classification.task~Difficulty, ncol=5)+
-  scale_fill_manual(values=alpha(cols, 0.7), name="")+
+  scale_fill_manual(values=alpha(cols, 0.8), name="")+
   scale_colour_manual(values=cols, name="")+
   # scale_y_continuous(breaks = seq(0, 1, 0.2))+
   theme_bw() +  
-  theme(legend.position="top", text=element_text(size=10), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
+  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 plot
-ggsave('./figures/Model_comparison_testset_permetric.png', plot, width=7, height=4.5, dpi=300)
+# ggsave('./figures/Model_comparison_testset_permetric.png', plot, width=7, height=4.5, dpi=300)
 ```
 
-# Compare performanc on test and validation data set
+# Compare performance on test and validation data set
 
 ```{r, fig.height=8, fig.width=7}
 tfidf = ggplot(filter(macro_plot, Model == "Tf-idf"), aes(x=Metric, y = Score, fill=Dataset, colour = Dataset)) + #dataset and variables to plot
-  geom_bar(stat="identity", position = position_dodge2(width = 0.9))+
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, ncol=5)+
   ggtitle("Tf-idf")+
-  scale_fill_manual(values=alpha(cols[c(3,4)], 0.7), name="")+
-  scale_colour_manual(values=cols[c(3,4)], name="")+
-  # coord_cartesian(ylim= c(0.5, 0.95))+ # to zoom in
+  scale_fill_manual(values=alpha(cols, 0.8), name="")+
+  scale_colour_manual(values=cols, name="")+
+  # coord_cartesian(ylim= c(0.5, 0.85))+ # to zoom in
   theme_bw() +  
-  theme(legend.position="top", text=element_text(size=10), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
+  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 bert = ggplot(filter(macro_plot, Model == "BERT"), aes(x=Metric, y = Score, fill=Dataset, colour = Dataset)) + #dataset and variables to plot
-  geom_bar(stat="identity", position = position_dodge2(width = 0.9))+
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, ncol=5)+
    ggtitle("BERT")+
-  scale_fill_manual(values=alpha(cols[c(3,4)], 0.7), name="")+
-  scale_colour_manual(values=cols[c(3,4)], name="")+
-  # coord_cartesian(ylim= c(0.5, 0.95))+ # to zoom in
+  scale_fill_manual(values=alpha(cols, 0.8), name="")+
+  scale_colour_manual(values=cols, name="")+
+  # coord_cartesian(ylim= c(0.5, 0.85))+ # to zoom in
   theme_bw() +  
-  theme(legend.position="top", text=element_text(size=10), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
+  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 combined = ggarrange(tfidf, bert, ncol=1, common.legend=T, labels=c("A", "B"))
 combined
-# ggsave('./figures/test_vs_validation_performance.png', combined, width=7, height=8, dpi=300)
+ggsave('./figures/test_vs_validation_performance.png', combined, width=7, height=8, dpi=300)
 ```
+
+# Intra-class performances
+
+```{r intraclass figure binary, fig.height=10, fig.width=7}
+df_binary = intra_plot %>% 
+  filter(!Classification.task %in% c("Problem vs Solution", "Main focus"), 
+         Metric != "F1") %>% 
+  droplevels()
+
+ggplot(df_binary, aes(x=Categories, y = Score, fill=Metric, colour = Metric)) + #dataset and variables to plot
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
+  facet_grid(Model~Classification.task)+
+  scale_fill_manual(values=alpha(cols[2:3], 0.8), name="")+
+  scale_colour_manual(values=cols[2:3], name="")+
+  # scale_y_continuous(breaks = seq(0, 1, 0.2))+
+  theme_bw() +  
+  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank()) #rotate x-axis tick labels
+# ggsave('./figures/Model_comparison_testset_permetric.png', plot, width=7, height=4.5, dpi=300)
+```
+
+
+
 # Number of transcripts per class
 
-```{r, fig n per category}
-df = filter(ncat_plot, Classificationtask != c("Problem vs Solution", "Main focus")) %>% 
+```{r, fig n per category binary tasks}
+df_binary = ncat_proportions %>% 
+  filter(!Classificationtask %in% c("Problem vs Solution", "Main focus")) %>% 
   droplevels()
 
 #make sure this drops all factor levels of the level 4 classification tasks
-
-
-ggplot(df, aes(x=Categories, y = n, fill=dataset)) +
-  geom_bar(stat="identity", position = position_dodge2(width = 0.9))+
-  facet_wrap(~Classificationtask)+
-  # scale_fill_manual(values=alpha(cols, 0.7), name="")+
-  # scale_colour_manual(values=cols, name="")+
-  # # scale_y_continuous(breaks = seq(0, 1, 0.2))+
+binary = ggplot(df_binary, aes(x=Categories, y = proportion, fill=Categories, colour=Categories)) +
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
+  facet_wrap(~Classificationtask, nrow=2)+
+  scale_fill_manual(values=alpha(cols, 0.8), name="")+
+  scale_colour_manual(values=cols, name="")+
   theme_bw() +
-  theme(legend.position="top", text=element_text(size=10), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(),
+  theme(legend.position="none", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
+```
+```{r, fig n per category problem solution}
+df_ps = ncat_proportions %>% 
+  filter(Classificationtask %in% c("Problem vs Solution")) %>% 
+  droplevels()
+
+#make sure this drops all factor levels of the level 4 classification tasks
+ps = ggplot(df_ps, aes(x=Categories, y = proportion, fill=Categories, colour = Categories)) +
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
+  facet_wrap(~Classificationtask, nrow=2)+
+  scale_fill_manual(values=alpha(cols, 0.8), name="")+
+  scale_colour_manual(values=cols, name="")+
+  theme_bw() +
+  theme(legend.position="none", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(),
+           axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
+```
+```{r, fig n per category main focus}
+df_mf = ncat_proportions %>% 
+  filter(Classificationtask %in% c("Main focus"))%>% 
+  droplevels()
+
+#make sure this drops all factor levels of the level 4 classification tasks
+mf = ggplot(df_mf, aes(x=Categories, y = proportion, fill=Categories, colour = Categories)) +
+  geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
+  facet_wrap(~Classificationtask, nrow=2)+
+  scale_fill_manual(values=alpha(cols, 0.8), name="")+
+  scale_colour_manual(values=cols, name="")+
+  theme_bw() +
+  theme(legend.position="none", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 ```
 
+```{r,  fig.width=7, fig.height=6}
+combined = ggarrange(
+  ggarrange(plot1, ncol=1, nrow = 1, common.legend=T, labels=c("A"), legend = "none", ),
+  ggarrange(plot2, mf, ncol=2, nrow = 1, common.legend=T, labels=c("B", "C"), legend = "none", align="hv"),
+  nrow=2, legend = "none"
+)
+combined
+ggsave('./figures/prop_per_category_all_datasets.png', combined, width=7, height=6, dpi=300)
+```
 
