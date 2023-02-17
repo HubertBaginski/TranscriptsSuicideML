@@ -1,0 +1,69 @@
+Classification task,Categories,"Train (n, %)","Val(n, %)","Test(n, %)"
+Suicide death,Yes,909 (56.4),227 (56.3),284 (56.3)
+Suicide death,Yes,,,
+Suicide death,No,703,176,220
+Suicide death,No,,,
+Celebrity suicide,Yes,209 (13.7),52 (13.6),65 (13.7)
+Celebrity suicide,Yes,,,
+Celebrity suicide,No,1312,329,411
+Celebrity suicide,No,,,
+Alternatives to suicide,Yes,118 (7.8),"30 (7.9)",37 (7.8)
+Alternatives to suicide,Yes,,,
+Alternatives to suicide,No,1403,351,439
+Alternatives to suicide,No,,,
+Monocausality,Yes,262 (17.2),65 (17.1),82 (17.2)
+Monocausality,Yes,,,
+Monocausality,No,1260,316,394
+Monocausality,No,,,
+Positive outcome crisis,Yes,175 (11.5),44 (11.5),55 (11.5)
+Positive outcome crisis,Yes,,,
+Positive outcome crisis,No,1350,338,422
+Positive outcome crisis,No,,,
+Healing story,Yes,122 (7.6),"30 (7.4)",38 (7.5)
+Healing story,Yes,,,
+Healing story,No,1490,373,466
+Healing story,No,,,
+Suicidal ideation,Yes,151 (9.4),"38 (9.4)",47 (9.3)
+Suicidal ideation,Yes,,,
+Suicidal ideation,No,1461,365,457
+Suicidal ideation,No,,,
+Enhancing myths,Yes,90 (5.9),"23 (6.0)",28 (5.9)
+Enhancing myths,Yes,,,
+Enhancing myths,No,1431,358,448
+Enhancing myths,No,,,
+Problem vs Solution,Problem,884 (57.9),221 (57.9),277 (57.9)
+Problem vs Solution,Problem,,,
+Problem vs Solution,Solution,324 (21.2),81 (21.2),101 (21.1)
+Problem vs Solution,Solution,,,
+Problem vs Solution,Both,296 (19.4),74 (19.4),93 (19.4)
+Problem vs Solution,Both,,,
+Problem vs Solution,Neither,24 (1.6),"6 (1.6)","7 (1.5)"
+Problem vs Solution,Neither,,,
+Main focus,Advocacy,174 (11.4),43 (11.2),"55(11.5)"
+Main focus,Advocacy,,,
+Main focus,Assisted suicide,31 (2.0),"8 (2.1)","10(2.1)"
+Main focus,Assisted suicide,,,
+Main focus,Attempted suicide,76 (5.0),"19 (5.0)","24(5.0)"
+Main focus,Attempted suicide,,,
+Main focus,Cluster,18 (1.2),"4 (1.0)","7(1.5)"
+Main focus,Cluster,,,
+Main focus,Suicide death,381 (24.9),96 (25.1),"121(25.2)"
+Main focus,Suicide death,,,
+Main focus,Healing story,46 (3.0),"12 (3.1)","14(2.9)"
+Main focus,Healing story,,,
+Main focus,Suicidal Ideation,"8 (0.5)","2(0.5)","2(0.4)"
+Main focus,Suicidal Ideation,,,
+Main focus,Legal issues,121 (7.9),"30 (7.8)","38(7.9)"
+Main focus,Legal issues,,,
+Main focus,Mass murder,91 (5.9),"23 (6.0)","28(5.8)"
+Main focus,Mass murder,,,
+Main focus,Murder suicide,147 (9.6),"37 (9.7)","46(9.6)"
+Main focus,Murder suicide,,,
+Main focus,Policy,182 (11.9),"45(11.7)","57(11.9)"
+Main focus,Policy,,,
+Main focus,Prevention,87 (5.7),"22(5.7)","27(5.6)"
+Main focus,Prevention,,,
+Main focus,Research,93 (6.1),"23(6.0)","29(6.0)"
+Main focus,Research,,,
+Main focus,Other,75 (4.9),"19(5.0)","22(4.6)"
+Main focus,Other,,,
