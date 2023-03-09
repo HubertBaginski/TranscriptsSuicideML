@@ -91,6 +91,31 @@ ncat_proportions = ncat_plot %>%
 ```
 # Number of transcripts per class
 
+
+## Binary tasks
+```{r}
+ncat_plot %>% 
+    filter(!Classification.task %in% c("Problem vs Solution", "Main focus")) %>% 
+  group_by(dataset, Categories) %>% 
+  summarise(mean = mean(n), 
+            median = median(n),
+            min = min(n), 
+            max = max(n))
+```
+## Main focus
+
+```{r}
+ncat_plot %>% 
+    filter(Classification.task %in% c("Main focus")) %>% 
+  group_by(dataset) %>% 
+  summarise(mean = mean(n), 
+            median = median(n),
+            min = min(n), 
+            max = max(n))
+```
+
+
+
 ```{r, fig n per category binary tasks, fig.height=2.5, fig.width=7}
 df_binary = ncat_proportions %>% 
   filter(!Classification.task %in% c("Problem vs Solution", "Main focus")) %>% 
@@ -220,14 +245,14 @@ df_binary = intra_plot %>%
   filter(!Classification.task %in% c("Problem vs Solution", "Main focus"), 
          Metric != "F1") %>% 
   droplevels()
-
-# plot_binary = 
+# 
+plot_binary =
   ggplot(df_binary, aes(x=Categories, y = Score, fill=Metric:Model, colour=Metric:Model)) + #dataset and variables to plot
   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, ncol = 4)+
   scale_fill_manual(values=c(cols[2:3], alpha(cols[2:3], 0.5)), name="")+
   scale_colour_manual(values=cols[c(2,3,2,3)], name="")+
-  coord_cartesian(ylim=c(0.2,0.7))+
+  # coord_cartesian(ylim=c(0.2,0.7))+
   # scale_y_continuous(breaks = seq(0, 1, 0.2))+
   theme_bw() +  
   theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank())
@@ -299,29 +324,25 @@ intra_n = intra_plot %>%
   # filter(!Classification.task %in% c("Problem vs Solution", "Main focus"))
   # pivot_wider(id_cols = c("Categories", "Model", "n", "proportion"), names_from = "Metric", values_from = "Score")
 
-
 corrn = ggplot(intra_n)+
   geom_point(aes(x=Score, y=n, color = Categories), size=2.1)+
   facet_grid(Model~Metric)+
   theme_bw()+
   # scale_color_manual(values = c(rep(cols[1:4], times = c(1,1,4, 14))))+
-    scale_color_manual(values = c("cornflowerblue", "red4", rep("black", 4), rep("grey", 14)))+
+  scale_color_manual(values = c("blue", "red3", "cyan", "gold", "green1","darkgreen", "grey", "violet",  "#A6317DFF", rep("grey", 6), "#671C80FF", rep("grey", 4)))+
+ 
   labs(y = "Class size n", x = "Performance")+
   theme(text=element_text(size=s+1), plot.margin = margin(rep(0.4,4), unit="cm"))
 corrn
-ggsave('./figures/Fig4_correlation_n_performance.pdf', corrn, width=7.5, height=5.2, dpi=300)
+# ggsave('./figures/Fig4_correlation_n_performance_multicolors.png', corrn, width=7.5, height=5.2, dpi=300)
 ```
 
+```{r}
 
+cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="Tf-idf"& n>100))
+cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="Tf-idf"& n>100))
 
-
-```{r, fig.width=7, fig.height=7}
-
-ggplot(intra_n)+
-  geom_jitter(aes(x=Score, y=n, color = Categories, shape = Model), size= 2.5)+
-  theme_bw()+
-  scale_color_manual(values = c("blue2", "red4", rep("black", 4), rep("grey", 14)))+
-  labs(y = "Class size n", x = "Performance")+
-  theme(text=element_text(size=s+1), plot.margin = margin(rep(0.4,4), unit="cm"), legend.position = "bottom")
+cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="BERT" & n>100))
+cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="BERT"& n>100))
 ```
 
