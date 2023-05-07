@@ -17,20 +17,21 @@ session = tf.compat.v1.Session(config=config)
 tf.compat.v1.keras.backend.set_session(session)
 
 
-def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, epochs, weights_file=None):
+def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, epochs, data_folder, weights_file=None):
     set_seeds(1)
-    df_var = process_transcripts(variable_code)
-    X_train, X_test, y_train, y_test = train_test_split(df_var.text
-                                                        , df_var[variable_code], test_size=0.2, random_state=1,
+    df_var = process_transcripts(variable_code, data_folder)
+    X_train, X_test, y_train, y_test = train_test_split(df_var.text,
+                                                        df_var[variable_code],
+                                                        test_size=0.2,
+                                                        random_state=1,
                                                         stratify=df_var[variable_code])
 
-    X_train, X_val, y_train, y_val = train_test_split(X_train
-                                                      , y_train, test_size=0.2, random_state=1, stratify=y_train)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1, stratify=y_train)
 
-    classNames2 = y_train.unique()
+    class_names = y_train.unique()
     t = text.Transformer(model_name,
                          maxlen=maxlen,
-                         class_names=classNames2)
+                         class_names=class_names)
 
     original_learner = train_learner(
         X_train.values, y_train.values,
@@ -53,15 +54,15 @@ def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, e
                             t=t_)
         val = t_.preprocess_test(X_val.values, y_val.values)
         model_.validate(val_data=val)
-        mat = get_performance(y_val.values, pred[0], classNames2)
+        mat = get_performance(y_val.values, pred[0], class_names)
 
         ## PREDICT ON TEST SET
         set_seeds(1)
         pred = predict_test(X_test.values, model_, t=t_)
         predictor = pred[1]
         test = t_.preprocess_test(X_test.values, y_test.values)
-        model_.validate(val_data=test, class_names=list(classNames2))
-        mat = get_performance(y_test.values, pred[0], classNames2)
+        model_.validate(val_data=test, class_names=list(class_names))
+        mat = get_performance(y_test.values, pred[0], class_names)
 
         # saving the ktrain model to disk ~500MB
         predictor.save(Path(checkpoint_folder) / variable_code)
