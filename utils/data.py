@@ -1,25 +1,36 @@
 import os
+import pathlib
 from collections import Counter
+from pathlib import Path
+from typing import Union
 
 import pandas as pd
 
 from utils.variable_codes import VariableCodes
 
 
-def process_transcripts(variable_code):
-    dataPath = "./data/new/broadcast/"
-    allTranscrips = os.listdir(dataPath)
-    abrv_months = ["Apr", "May", "Jun", "Jul", "Aug",
-                   "Sep", "Oct", "Nov", "Dec", "Jan",
-                   "Feb", "Mar"]
+def process_transcripts(variable_code: str, data_folder: Union[pathlib.Path, str]) -> pd.DataFrame:
+    """
+
+    Args:
+        variable_code: Variable code used for training, see /utils/variable_codes.py
+        data_folder: Path to training data.
+
+    Returns:
+        pre-processed training dataframe
+    """
+    data_folder = Path(data_folder) if isinstance(data_folder, str) else data_folder
+    transcript_folder = data_folder / "broadcast"
+    all_transcripts = os.listdir(transcript_folder)
+    abrv_months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"]
 
     contents = []
     id_ = []
     temp = ""
     new_row = 0
 
-    for month in allTranscrips:
-        with open(dataPath + month, encoding="utf-8") as transcripts:
+    for month in all_transcripts:
+        with open(transcript_folder / month, encoding="utf-8") as transcripts:
             for line in transcripts:
                 check = False
                 if "B_" in line:
@@ -56,7 +67,7 @@ def process_transcripts(variable_code):
     df = df[:-1]
 
     # add here the latest Excel with the manually coded variable codes
-    f = "./data/new/V!brant_data_all_161220.xlsx"
+    f = data_folder / "V!brant_data_all_161220.xlsx"
     df_classes = pd.read_excel(f)
 
     df_classes = df_classes.iloc[1:]

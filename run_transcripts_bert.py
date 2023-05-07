@@ -1,4 +1,6 @@
 import argparse
+import pathlib
+from typing import Union
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -16,26 +18,50 @@ session = tf.compat.v1.Session(config=config)
 tf.compat.v1.keras.backend.set_session(session)
 
 
-def train_bert_model(variable_code, model_name, maxlen, checkpoint_folder, lr, epochs):
+def train_bert_model(variable_code: str,
+                     model_name: str = "bert-base-uncased",
+                     maxlen: int = 512,
+                     checkpoint_folder: Union[pathlib.Path, str] = "../checkpoints",
+                     lr: float = 1.5e-5,
+                     epochs: int = 1,
+                     data_folder: Union[pathlib.Path, str] = "../data/new"):
+    """
+    Trains a 'model_name' transformer model for with the provided data and parameters.
+    Args:
+        variable_code: Variable code used for training, see /utils/variable_codes.py
+        model_name: transformer model name
+        maxlen: maximum number of tokens in one sequence
+        checkpoint_folder: path to check point folder
+        lr: learning rate
+        epochs: maximum number of epochs for training
+        data_folder: folder to training data
+    """
     set_seeds(1)
-    df_var = process_transcripts(variable_code)
-    X_train, X_test, y_train, y_test = train_test_split(df_var.text
-                                                        , df_var[variable_code], test_size=0.2, random_state=1,
+    df_var = process_transcripts(variable_code, data_folder)
+    X_train, X_test, y_train, y_test = train_test_split(df_var.text,
+                                                        df_var[variable_code],
+                                                        test_size=0.2,
+                                                        random_state=1,
                                                         stratify=df_var[variable_code])
 
-    X_train, X_val, y_train, y_val = train_test_split(X_train
-                                                      , y_train, test_size=0.2, random_state=1, stratify=y_train)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1, stratify=y_train)
 
-    classNames2 = y_train.unique()
-    t = text.Transformer(model_name,
+    class_names = y_train.unique()
+    _ = text.Transformer(model_name,
                          maxlen=maxlen,
-                         class_names=classNames2)
+                         class_names=class_names)
 
-    original_learner = train_learner(
-        X_train.values, y_train.values,
-        X_val.values, y_val.values,
-        lr=lr, epoch=epochs, seed=1, text_length=maxlen,
-        model_name=model_name, checkpoint_folder=checkpoint_folder)
+    _ = train_learner(
+        X_train.values,
+        y_train.values,
+        X_val.values,
+        y_val.values,
+        lr=lr,
+        epoch=epochs,
+        seed=1,
+        text_length=maxlen,
+        model_name=model_name,
+        checkpoint_folder=checkpoint_folder)
 
 
 if __name__ == '__main__':
@@ -53,7 +79,9 @@ if __name__ == '__main__':
     parser.add_argument('--text_length', help='Maximum number of tokens for each sequence.', type=int, default=512)
     parser.add_argument('--checkpoint_folder', help='Path to checkpoint folder, epoch weights are stored there.',
                         default="../checkpoints")
+    parser.add_argument('--data_folder', help='Path to training documents.',
+                        default="../data/new")
     args = parser.parse_args()
     train_bert_model(variable_code=args.variable_code, model_name=args.model_name,
                      maxlen=args.text_length, checkpoint_folder=args.checkpoint_folder,
-                     lr=args.lr, epochs=args.epochs)
+                     lr=args.lr, epochs=args.epochs, data_folder=args.data_folder)

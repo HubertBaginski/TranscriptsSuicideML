@@ -5,10 +5,11 @@ services:
     image: hubertbaginski/transcripts:latest
     container_name: transcripts
     environment:
-      - APP_PARAMS=--batch_size 4 --epochs 20 --checkpoint_folder /checkpoint_folder --variable_code MF01
+      - APP_PARAMS=--batch_size 4 --epochs 20 --checkpoint_folder /checkpoint_folder --variable_code MF01 --data_folder /data/new
     shm_size: '2gb'
     volumes:
       - /home/cept/hubert/checkpoints:/checkpoint_folder
+      - /your/transcripts_data:/data/new
     deploy:
       resources:
         reservations:
