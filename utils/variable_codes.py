@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class VariableCodes(Enum):
+    """ Supported varaible codes for model training and inference. """
     COMPLETED_SUICIDE = "MF02_01"
     CELEBRITY_SUICIDE = "ID05_01"
     SUICIDAL_IDEATION = "MF02_03"
