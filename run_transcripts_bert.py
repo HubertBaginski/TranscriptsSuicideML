@@ -1,4 +1,5 @@
 import argparse
+import os
 import pathlib
 from typing import Union
 
@@ -11,6 +12,12 @@ from utils.model import train_learner, set_seeds
 
 plt.rcdefaults()
 from ktrain import text
+
+physical_devices = tf.config.list_physical_devices('GPU')
+for device in physical_devices:
+    tf.config.experimental.set_memory_growth(device, True)
+tf.config.experimental.set_visible_devices(tf.config.list_physical_devices('GPU'), 'GPU')
+os.environ['TF_OPTIMIZE'] = '1'
 
 config = tf.compat.v1.ConfigProto(gpu_options=tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.95))
 config.gpu_options.allow_growth = True
