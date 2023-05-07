@@ -1,0 +1,61 @@
+Classification task,Model,Precision ,Recall,F1,Accuracy,Dataset
+Suicide death,Majority,0.282,0.5,0.36,0.563,Validation
+Suicide death,Tf-idf,0.833,0.823,0.826,0.831,Validation
+Suicide death,BERT,0.847,0.835,0.839,0.844,Validation
+Celebrity suicide,Majority,0.432,0.5,0.463,0.864,Validation
+Celebrity suicide,Tf-idf,0.917,0.93,0.923,0.966,Validation
+Celebrity suicide,BERT,0.994,0.962,0.977,0.99,Validation
+Alternatives to suicide,Majority,0.415,0.5,0.453,0.83,Validation
+Alternatives to suicide,Tf-idf,0.75,0.809,0.773,0.856,Validation
+Alternatives to suicide,BERT,0.799,0.784,0.791,0.885,Validation
+Monocausality,Majority,0.442,0.5,0.469,0.885,Validation
+Monocausality,Tf-idf,0.712,0.678,0.693,0.885,Validation
+Monocausality,BERT,0.7,0.569,0.59,0.885,Validation
+Positive outcome crisis,Majority,0.461,0.5,0.48,0.921,Validation
+Positive outcome crisis,Tf-idf,0.883,0.712,0.769,0.948,Validation
+Positive outcome crisis,BERT,0.921,0.747,0.807,0.955,Validation
+Healing story,Majority,0.463,0.5,0.481,0.923,Validation
+Healing story,Tf-idf,0.837,0.774,0.802,0.95,Validation
+Healing story,BERT,0.905,0.697,0.76,0.95,Validation
+Suicidal ideation,Majority,0.452,0.5,0.475,0.906,Validation
+Suicidal ideation,Tf-idf,0.676,0.646,0.658,0.893,Validation
+Suicidal ideation,BERT,0.782,0.648,0.688,0.918,Validation
+Enhancing myths,Majority,0.471,0.5,0.485,0.942,Validation
+Enhancing myths,Tf-idf,0.722,0.722,0.722,0.937,Validation
+Enhancing myths,BERT,0.723,0.561,0.588,0.94,Validation
+Problem vs Solution,Majority,0.145,0.25,0.183,0.579,Validation
+Problem vs Solution,Tf-idf,0.761,0.741,0.745,0.751,Validation
+Problem vs Solution,BERT,0.729,0.667,0.684,0.767,Validation
+Main focus,Majority,0.018,0.071,0.028,0.248,Validation
+Main focus,Tf-idf,0.679,0.684,0.675,0.676,Validation
+Main focus,BERT,0.592,0.598,0.591,0.715,Validation
+Suicide death,Majority,0.281,0.5,0.36,0.563,Test
+Suicide death,Tf-idf,0.842,0.845,0.843,0.845,Test
+Suicide death,BERT,0.848,0.83,0.836,0.841,Test
+Celebrity suicide,Majority,0.432,0.5,0.463,0.863,Test
+Celebrity suicide,Tf-idf,0.92,0.942,0.931,0.966,Test
+Celebrity suicide,BERT,0.962,0.919,0.939,0.973,Test
+Alternatives to suicide,Majority,0.414,0.5,0.453,0.828,Test
+Alternatives to suicide,Tf-idf,0.747,0.795,0.766,0.853,Test
+Alternatives to suicide,BERT,0.742,0.728,0.734,0.853,Test
+Monocausality,Majority,0.442,0.5,0.469,0.885,Test
+Monocausality,Tf-idf,0.733,0.731,0.737,0.891,Test
+Monocausality,BERT,0.834,0.657,0.703,0.91,Test
+Positive outcome crisis,Majority,0.461,0.5,0.48,0.922,Test
+Positive outcome crisis,Tf-idf,0.912,0.753,0.81,0.956,Test
+Positive outcome crisis,BERT,0.877,0.712,0.767,0.947,Test
+Healing story,Majority,0.462,0.5,0.48,0.925,Test
+Healing story,Tf-idf,0.768,0.735,0.75,0.935,Test
+Healing story,BERT,0.797,0.701,0.738,0.938,Test
+Suicidal ideation,Majority,0.453,0.5,0.476,0.907,Test
+Suicidal ideation,Tf-idf,0.688,0.684,0.686,0.895,Test
+Suicidal ideation,BERT,0.788,0.66,0.7,0.921,Test
+Enhancing myths,Majority,0.471,0.5,0.458,0.941,Test
+Enhancing myths,Tf-idf,0.744,0.752,0.748,0.943,Test
+Enhancing myths,BERT,0.808,0.569,0.603,0.945,Test
+Problem vs Solution,Majority,0.15,0.25,0.183,0.579,Test
+Problem vs Solution,Tf-idf,0.779,0.719,0.74,0.774,Test
+Problem vs Solution,BERT,0.769,0.766,0.765,0.803,Test
+Main focus,Majority,0.018,0.071,0.029,0.251,Test
+Main focus,Tf-idf,0.588,0.576,0.569,0.622,Test
+Main focus,BERT,0.62,0.587,0.589,0.687,Test
