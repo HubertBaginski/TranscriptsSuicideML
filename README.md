@@ -1,4 +1,4 @@
-# TranscriptsSuicideML
+# Code and Models for the paper: "A machine learning approach to detect potentially harmful and protective suicide-related content in broadcast media"
 
 Because the transcripts of media broadcasts are proprietary data (by Brandwatch) we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.  
 
