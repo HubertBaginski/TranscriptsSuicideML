@@ -7,6 +7,7 @@ ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     PYTHONPATH="${PYTHONPATH}:."
 
+COPY daemon.json /etc/docker/
 COPY . .
 
 RUN pip install -r requirements.txt
