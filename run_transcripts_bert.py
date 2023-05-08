@@ -89,6 +89,7 @@ if __name__ == '__main__':
     parser.add_argument('--data_folder', help='Path to training documents.',
                         default="../data/new")
     args = parser.parse_args()
+    print(args)
     train_bert_model(variable_code=args.variable_code, model_name=args.model_name,
                      maxlen=args.text_length, checkpoint_folder=args.checkpoint_folder,
                      lr=args.lr, epochs=args.epochs, data_folder=args.data_folder)
