@@ -24,3 +24,4 @@ jobs:
         with:
           push: true
           tags: hubertbaginski/transcripts:latest
+          platform: linux/amd64
