@@ -1,6 +1,6 @@
 # TranscriptsSuicideML
 
-Due to legal reasons we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.  
+Because the transcripts of media broadcasts are proprietary data (by Brandwatch) we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.  
 
 If you want to train and predict the models yourself, you can use the docker image and the docker-compose files. If you have an NVIDIA GPU the training will run on the GPU, please adjust the following parameters in the **docker-compose.yml**:
  - **--batch_size**: set according to memory of GPU, if < 10GB use 2, else 4
@@ -25,16 +25,18 @@ You can also set up the environment locally by installing the requirements via `
 
 The trained models can be found and loaded via their variable codes in dockerhub:
 
- - https://huggingface.co/HubertBaginski/BERT_AU01_01
- - https://huggingface.co/HubertBaginski/BERT_PS01
- - https://huggingface.co/HubertBaginski/BERT_PR01_01
- - https://huggingface.co/HubertBaginski/BERT_PO01_01
- - https://huggingface.co/HubertBaginski/BERT_MF02_01
- - https://huggingface.co/HubertBaginski/BERT_MF02_03
- - https://huggingface.co/HubertBaginski/BERT_MF02_12
- - https://huggingface.co/HubertBaginski/BERT_MF01
- - https://huggingface.co/HubertBaginski/BERT_ID05_01
- - https://huggingface.co/HubertBaginski/CS02_01
+ - Suicide death (completed suicide): https://huggingface.co/HubertBaginski/BERT_MF02_01
+ - Celebrity suicide: https://huggingface.co/HubertBaginski/BERT_ID05_01
+ - Alternatives to suicide: https://huggingface.co/HubertBaginski/BERT_AU01_01
+ - Monocausality: https://huggingface.co/HubertBaginski/CS02_01
+ - Positive outcome of suicidal crisis: https://huggingface.co/HubertBaginski/BERT_PO01_01
+ - Healing story: https://huggingface.co/HubertBaginski/BERT_MF02_12
+ - Suicidal ideation: https://huggingface.co/HubertBaginski/BERT_MF02_03
+ - Problem vs. Solution focus: https://huggingface.co/HubertBaginski/BERT_PS01
+ - Enhancing myths: https://huggingface.co/HubertBaginski/BERT_PR01_01
+ - Main focus: https://huggingface.co/HubertBaginski/BERT_MF01
+
+
 
 
 - Todo:
