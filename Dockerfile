@@ -10,5 +10,9 @@ ENV LANG=C.UTF-8 \
 COPY . .
 
 RUN pip install -r requirements.txt
+RUN echo '{"experimental":true}' >> /etc/docker/daemon.json
+
+LABEL org.opencontainers.image.manifest="application/vnd.docker.distribution.manifest.v2+json"
+
 
 ENTRYPOINT ["/bin/bash", "-c", "python3 predict_transcripts_bert.py $APP_PARAMS"]
