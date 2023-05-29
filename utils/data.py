@@ -9,13 +9,13 @@ import pandas as pd
 from utils.variable_codes import VariableCodes
 
 
-def process_transcripts(variable_code: str, data_folder: Union[pathlib.Path, str]) -> pd.DataFrame:
+def process_transcripts(variable_code: str, data_folder: Union[pathlib.Path, str], new_inference=False) -> pd.DataFrame:
     """
 
     Args:
         variable_code: Variable code used for training, see /utils/variable_codes.py
         data_folder: Path to training data.
-
+        new_inference: if true will convert text file to dataframe and lowercase it, else run custom pre-processing
     Returns:
         pre-processed training dataframe
     """
@@ -65,44 +65,43 @@ def process_transcripts(variable_code: str, data_folder: Union[pathlib.Path, str
     d = {"AC01_01": ser1.str.upper(), "text": ser}
     df = pd.DataFrame(data=d)
     df = df[:-1]
+    if new_inference is False:
+        # add here the latest Excel with the manually coded variable codes
+        f = data_folder / "V!brant_data_all_161220.xlsx"
+        df_classes = pd.read_excel(f)
 
-    # add here the latest Excel with the manually coded variable codes
-    f = data_folder / "V!brant_data_all_161220.xlsx"
-    df_classes = pd.read_excel(f)
+        df_classes = df_classes.iloc[1:]
 
-    df_classes = df_classes.iloc[1:]
+        # check selected variable code mapping
+        #VariableCodes.ALTERNATIVES_TO_SUICIDE.value
 
-    # check selected variable code mapping
-    #VariableCodes.ALTERNATIVES_TO_SUICIDE.value
+        # upper case ID for Excel and extracted ID's to match
+        df_classes.AC01_01 = df_classes.AC01_01.str.upper()
+        # combine extracted text and variable codes from excel, by joining on ID
+        fin = pd.merge(df, df_classes, on="AC01_01")
+        print(f"Number of samples from joined texts and Excel  by ID: {fin.shape}")
+        # select relevant columns
+        df_var = fin.filter(items=["AC01_01", "text", variable_code, "CO01"])
+        # filter for coder -9 for consistently labeled training data
+        df_var = df_var[df_var["CO01"] == -9]
+        # remove texts that dont have a assigned number (-9)
+        df_var = df_var[df_var[variable_code] != -9]
+        print(f"Number of samples with only coder -9: {df_var.shape}")
+        print(f"Frequencies of labels: {Counter(df_var[variable_code]).most_common()}")
 
-    # upper case ID for Excel and extracted ID's to match
-    df_classes.AC01_01 = df_classes.AC01_01.str.upper()
-    # combine extracted text and variable codes from excel, by joining on ID
-    fin = pd.merge(df, df_classes, on="AC01_01")
-    print(f"Number of samples from joined texts and Excel  by ID: {fin.shape}")
-    # select relevant columns
-    df_var = fin.filter(items=["AC01_01", "text", variable_code, "CO01"])
-    # filter for coder -9 for consistently labeled training data
-    df_var = df_var[df_var["CO01"] == -9]
-    # remove texts that dont have a assigned number (-9)
-    df_var = df_var[df_var[variable_code] != -9]
-    print(f"Number of samples with only coder -9: {df_var.shape}")
-    print(f"Frequencies of labels: {Counter(df_var[variable_code]).most_common()}")
-
-    if variable_code == VariableCodes.PROBLEM_SOLUTION.value:
-        df_var[variable_code] = df_var[variable_code].replace(1, "Problem").\
-            replace(2, "Solution").replace(3, "Both").replace(4, "Neither")
-    elif variable_code == VariableCodes.MAIN_FOCUS.value:
-        df_var[variable_code] = df_var[variable_code].replace(1, "completed").replace(2,
-                                                                                      "attempted"). \
-            replace(3, "ideation").replace(4, "mur_sui_indi").replace(5, "mass_mur_sui"). \
-            replace(6, "assisted").replace(7, "cluster").replace(9, "policy_pvt").replace(10,
-                                                                                          "research"). \
-            replace(11, "legal_issues").replace(12, "healing_story").replace(13, "other").replace(
-            14, "advocacy"). \
-            replace(15, "prevention")
+        if variable_code == VariableCodes.PROBLEM_SOLUTION.value:
+            df_var[variable_code] = df_var[variable_code].replace(1, "Problem").\
+                replace(2, "Solution").replace(3, "Both").replace(4, "Neither")
+        elif variable_code == VariableCodes.MAIN_FOCUS.value:
+            df_var[variable_code] = df_var[variable_code].replace(1, "completed").replace(2,"attempted"). \
+                replace(3, "ideation").replace(4, "mur_sui_indi").replace(5, "mass_mur_sui"). \
+                replace(6, "assisted").replace(7, "cluster").replace(9, "policy_pvt").replace(10, "research"). \
+                replace(11, "legal_issues").replace(12, "healing_story").replace(13, "other").replace(
+                14, "advocacy").replace(15, "prevention")
+        else:
+            df_var[variable_code] = df_var[variable_code].replace(1, "no").replace(2, "yes")
     else:
-        df_var[variable_code] = df_var[variable_code].replace(1, "no").replace(2, "yes")
+        df_var = df
     # lowercasing text
     df_var.text = df_var.text.apply(str.lower)
 

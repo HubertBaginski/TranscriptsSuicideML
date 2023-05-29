@@ -69,7 +69,8 @@ ncat = ncat %>%
 
 #macro
 macro_plot = pivot_longer(macro, cols = c("Precision", "Recall", "F1", "Accuracy"), names_to = "Metric", values_to ="Score") %>% 
-  mutate(Metric = factor(Metric, levels = c("Precision", "Recall", "F1", "Accuracy"), labels = c("Precision", "Recall", "F1", "Accuracy")))
+  mutate(Metric = factor(Metric, levels = c("Precision", "Recall", "F1", "Accuracy"), labels = c("Precision", "Recall", "F1", "Accuracy"))) %>% 
+  filter(Metric != "Accuracy")
 
 #intra
 intra_plot = pivot_longer(intra, cols = c("Precision", "Recall", "F1"), names_to = "Metric", values_to ="Score") %>% 
@@ -117,8 +118,9 @@ ncat_plot %>%
 
 
 ```{r, fig n per category binary tasks, fig.height=2.5, fig.width=7}
-df_binary = ncat_proportions %>% 
-  filter(!Classification.task %in% c("Problem vs Solution", "Main focus")) %>% 
+df_binary = ncat_plot %>% #ncat_propotions for proportion plot
+  filter(!Classification.task %in% c("Problem vs Solution", "Main focus"), 
+         dataset == "Train") %>% 
   droplevels() %>% 
   mutate(Classification.task = recode(Classification.task, "Suicide death"="Suicide\n death",
                                       "Healing story"="Healing\n story",
@@ -129,8 +131,19 @@ df_binary = ncat_proportions %>%
                                       "Suicidal ideation" =  "Suicidal \n ideation",
                                       "Enhancing myths" =   "Enhancing \n myths" ))
 
+# #make sure this drops all factor levels of the level 4 classification tasks
+# binary = ggplot(df_binary, aes(x=Categories, y = proportion, fill=Categories, colour=Categories)) +
+#   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
+#   facet_wrap(~Classification.task, nrow=1)+
+#   scale_fill_manual(values=cols, name="")+
+#   scale_colour_manual(values=cols, name="")+
+#   theme_bw() +
+#   theme(legend.position="none", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(),
+#         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
+# binary
+
 #make sure this drops all factor levels of the level 4 classification tasks
-binary = ggplot(df_binary, aes(x=Categories, y = proportion, fill=Categories, colour=Categories)) +
+binary = ggplot(df_binary, aes(x=Categories, y = n, fill=Categories, colour=Categories)) +
   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, nrow=1)+
   scale_fill_manual(values=cols, name="")+
@@ -139,14 +152,16 @@ binary = ggplot(df_binary, aes(x=Categories, y = proportion, fill=Categories, co
   theme(legend.position="none", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(),
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 binary
+
 ```
 ```{r, fig n per category problem solution}
-df_ps = ncat_proportions %>% 
-  filter(Classification.task %in% c("Problem vs Solution")) %>% 
+df_ps = ncat_plot %>% 
+  filter(Classification.task %in% c("Problem vs Solution"),
+          dataset == "Train") %>% 
   droplevels()
 
 #make sure this drops all factor levels of the level 4 classification tasks
-ps = ggplot(df_ps, aes(x=Categories, y = proportion, fill=Categories, colour = Categories)) +
+ps = ggplot(df_ps, aes(x=Categories, y = n, fill=Categories, colour = Categories)) +
   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, nrow=2)+
   scale_fill_manual(values=cols, name="")+
@@ -156,12 +171,13 @@ ps = ggplot(df_ps, aes(x=Categories, y = proportion, fill=Categories, colour = C
            axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 ```
 ```{r, fig n per category main focus}
-df_mf = ncat_proportions %>% 
-  filter(Classification.task %in% c("Main focus"))%>% 
+df_mf = ncat_plot%>% 
+  filter(Classification.task %in% c("Main focus"), 
+         dataset == "Train")%>% 
   droplevels()
 
 #make sure this drops all factor levels of the level 4 classification tasks
-mf = ggplot(df_mf, aes(x=Categories, y = proportion, fill=Categories, colour = Categories)) +
+mf = ggplot(df_mf, aes(x=Categories, y = n, fill=Categories, colour = Categories)) +
   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, nrow=2)+
   scale_fill_manual(values=cols, name="")+
@@ -178,7 +194,7 @@ combined = ggarrange(
  heights= c(0.45, 0.55), nrow=2, legend = "none"
 )
 combined
-ggsave('./figures/Fig1_prop_per_category_all_datasets.png', combined, width=7, height=5, dpi=300)
+# ggsave('./figures/Fig1_n_per_category_all_trainingset.png', combined, width=7, height=5, dpi=300)
 ```
 
 # Model comparison per task: macro-average
@@ -194,7 +210,7 @@ plot = ggplot(filter(macro_plot, Dataset == "Test"), aes(x=Metric, y = Score, fi
   theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 plot
-# ggsave('./figures/Model_comparison_testset_permetric.png', plot, width=7, height=4.5, dpi=300)
+# ggsave('./figures/Fig2_Model_comparison_testset_permetric.png', plot, width=7, height=4.5, dpi=300)
 ```
 
 ## Rank difficulty list macro-F1
@@ -233,7 +249,7 @@ bert = ggplot(filter(macro_plot, Model == "BERT"), aes(x=Metric, y = Score, fill
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 combined = ggarrange(tfidf, bert, ncol=1, common.legend=T, labels=c("A", "B"))
 combined
-ggsave('./figures/test_vs_validation_performance.png', combined, width=7, height=8, dpi=300)
+ # ggsave('./figures/FigS1_test_vs_validation_performance.png', combined, width=7, height=8, dpi=300)
 ```
 
 # Intra-class performances
@@ -315,34 +331,36 @@ ggsave('./figures/Fig3_intraclass_performances.png', combined, width=7, height=6
 
 ```{r, fig.width=7.5, fig.height=5.5, warning=F}
 intra_n = intra_plot %>% 
-  inner_join(ncat_proportions) %>% 
-  rename(n = "total") %>% 
+  inner_join(ncat_plot) %>% 
+  # rename(n = "total") %>% 
   select(-c(Difficulty)) %>% 
-  filter(Metric != "F1") %>% 
+  filter(Metric != "F1", 
+         dataset == "Train") %>% 
   mutate(Categories = factor(Categories, levels = unique(Categories), labels = unique(Categories)), 
          binary_multiple = recode(Classification.task,"Suicide death" = "binary", "Celebrity suicide" = "binary", "Alternatives to suicide" = "binary",  "Monocausality" = "binary", "Positive outcome crisis"="binary",  "Healing story"="binary", "Suicidal ideation" = "binary",  "Enhancing myths"="binary"))
   # filter(!Classification.task %in% c("Problem vs Solution", "Main focus"))
   # pivot_wider(id_cols = c("Categories", "Model", "n", "proportion"), names_from = "Metric", values_from = "Score")
 
 corrn = ggplot(intra_n)+
-  geom_point(aes(x=Score, y=n, color = Categories), size=2.1)+
+  geom_point(aes(x=n, y=Score, color = Categories), size=2.1)+
   facet_grid(Model~Metric)+
   theme_bw()+
   # scale_color_manual(values = c(rep(cols[1:4], times = c(1,1,4, 14))))+
-  scale_color_manual(values = c("blue", "red3", "cyan", "gold", "green1","darkgreen", "grey", "violet",  "#A6317DFF", rep("grey", 6), "#671C80FF", rep("grey", 4)))+
- 
-  labs(y = "Class size n", x = "Performance")+
+  scale_color_manual(values = c("blue", "red3", "cyan", "gold", "olivedrab1", "darkgreen", 
+                                      "grey", "purple4",  "#A6317DFF", "grey", "pink", rep("grey", 4), "violet", rep("grey", 4)))+
+   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+   scale_x_continuous(limits = c(0, 1500), breaks = seq(0, 1500, 250)) +
+  labs(x = "Class size n", y = "Performance")+
   theme(text=element_text(size=s+1), plot.margin = margin(rep(0.4,4), unit="cm"))
 corrn
-# ggsave('./figures/Fig4_correlation_n_performance_multicolors.png', corrn, width=7.5, height=5.2, dpi=300)
+ # ggsave('./figures/Fig4_correlation_n_performance_multicolors_trainingdataset.png', corrn, width=7.5, height=5.2, dpi=300)
 ```
 
 ```{r}
+cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="Tf-idf"& n>50))
+cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="Tf-idf" & n>50))
 
-cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="Tf-idf"& n>100))
-cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="Tf-idf"& n>100))
-
-cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="BERT" & n>100))
-cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="BERT"& n>100))
+cor.test(~Scor<e+n, data = filter(intra_n, Metric == "Precision" & Model =="BERT" & n<50))
+cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="BERT"))
 ```
 
