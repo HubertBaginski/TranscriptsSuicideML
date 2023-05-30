@@ -1,6 +1,29 @@
 # Code and Models for the paper: "A machine learning approach to detect potentially harmful and protective suicide-related content in broadcast media"
 
-Because the transcripts of media broadcasts are proprietary data (by Brandwatch) we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.  
+## Data
+
+Because the transcripts of media broadcasts are proprietary data (by Brandwatch) we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.
+
+In data/new/ you can find 
+
+- an example transcript in raw text format
+- the datafile "V!brant_data_all_161220.csv" (as .csv and .xlsx) containing the coded characteristics for all transcripts
+- Detailed information about how all characteristics were coded/labelled, in the file "manual_coding_system_online_questionnaire.pdf". It's in the format of a SoSci Survey online questionnaire, in which all transcripts were coded. 
+
+### Documentation for the datafile "V!brant_data_all_161220.csv"
+
+- First row: Variable codes for each characteristic
+- Second row: Explanation of variable code, summary of the label
+- Row 3 onward: codes for all characteristics per transcript, many more characteristics than those for which we trained models. One line per transcript. 
+- Example characteristic: 
+    - Variable code: AU01_01
+    - Label summary: Alternatives to suicidal behaviour
+    - If you search AU01_01 in the PDF with the coding system, you'll find detailed labelling explanations on page 36 (" The item includes alternatives to suicidal behaviour. ANY alternative
+counts. ...") , and the labels for numeric codes in the datafile: 1= No, 2 = Yes, -9 = Not answered.
+- Column 1: "Interview number (ongoing)" - Interview is an automatic label by Soscisurvey, it refers to transcripts here. 
+- Note on sample size: the sample of transcripts in the .csv file is higher than the number used for model training in the paper, because the datafile also contains online news articles, which were not analysed in the current study.
+
+## Model training
 
 If you want to train and predict the models yourself, you can use the docker image and the docker-compose files. If you have an NVIDIA GPU the training will run on the GPU, please adjust the following parameters in the **docker-compose.yml**:
  - **--batch_size**: set according to memory of GPU, if < 10GB use 2, else 4
@@ -23,23 +46,18 @@ The training will create one weights file for each epoch and print the evaluatio
 
 You can also set up the environment locally by installing the requirements via `pip3 install -r requirments.txt`. Then you can use the scripts `run_transcripts_bert.py` for training and `predict_transcripts_bert.py` for inference. You can also work with the jupyter notebook that offers additional comments.
 
+
+## Machine learning models for download
+
 The trained models can be found and loaded via their variable codes in dockerhub:
 
- - Suicide death (completed suicide): https://huggingface.co/HubertBaginski/BERT_MF02_01
- - Celebrity suicide: https://huggingface.co/HubertBaginski/BERT_ID05_01
- - Alternatives to suicide: https://huggingface.co/HubertBaginski/BERT_AU01_01
- - Monocausality: https://huggingface.co/HubertBaginski/CS02_01
- - Positive outcome of suicidal crisis: https://huggingface.co/HubertBaginski/BERT_PO01_01
- - Healing story: https://huggingface.co/HubertBaginski/BERT_MF02_12
- - Suicidal ideation: https://huggingface.co/HubertBaginski/BERT_MF02_03
- - Problem vs. Solution focus: https://huggingface.co/HubertBaginski/BERT_PS01
- - Enhancing myths: https://huggingface.co/HubertBaginski/BERT_PR01_01
- - Main focus: https://huggingface.co/HubertBaginski/BERT_MF01
-
-
-
-
-- Todo:
-  - set dockerhub image to public
-  - set docker repo to public
-  - add descirption info to the huzggignface models (update with link to repo and paper)
+ - Suicide death (completed suicide): https://huggingface.co/HubertBaginski/bert-suicide-death-completed
+ - Celebrity suicide: https://huggingface.co/HubertBaginski/bert-celebrity-suicide
+ - Alternatives to suicide: https://huggingface.co/HubertBaginski/bert-alternatives-to-suicide
+ - Monocausality: https://huggingface.co/HubertBaginski/bert-monocausality
+ - Positive outcome of suicidal crisis: https://huggingface.co/HubertBaginski/bert-positive-outcome-crisis
+ - Healing story: https://huggingface.co/HubertBaginski/bert-healing-story
+ - Suicidal ideation: https://huggingface.co/HubertBaginski/bert-suicidal-ideation
+ - Problem vs. Solution focus: https://huggingface.co/HubertBaginski/bert-problem-or-solution
+ - Enhancing myths: https://huggingface.co/HubertBaginski/bert-enhancing-myths
+ - Main focus: https://huggingface.co/HubertBaginski/bert-main-focus
