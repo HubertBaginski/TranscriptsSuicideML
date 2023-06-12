@@ -1,5 +1,20 @@
 # Code and Models for the paper: "A machine learning approach to detect potentially harmful and protective suicide-related content in broadcast media"
 
+## Downloading our trained models
+
+- All trained TF-IDF & SVM models are in the folder svm_models
+- All BERT models can be downloaded from huggingface, and loaded via their variable codes in dockerhub:
+    - Suicide death (completed suicide): https://huggingface.co/HubertBaginski/bert-suicide-death-completed
+    - Celebrity suicide: https://huggingface.co/HubertBaginski/bert-celebrity-suicide
+    - Alternatives to suicide: https://huggingface.co/HubertBaginski/bert-alternatives-to-suicide
+    - Monocausality: https://huggingface.co/HubertBaginski/bert-monocausality
+    - Positive outcome of suicidal crisis: https://huggingface.co/HubertBaginski/bert-positive-outcome-crisis
+    - Healing story: https://huggingface.co/HubertBaginski/bert-healing-story
+    - Suicidal ideation: https://huggingface.co/HubertBaginski/bert-suicidal-ideation
+    - Problem vs. Solution focus: https://huggingface.co/HubertBaginski/bert-problem-or-solution
+    - Enhancing myths: https://huggingface.co/HubertBaginski/bert-enhancing-myths
+    - Main focus: https://huggingface.co/HubertBaginski/bert-main-focus
+
 ## Data
 
 Because the transcripts of media broadcasts are proprietary data (by Brandwatch) we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.
@@ -45,19 +60,3 @@ The training will create one weights file for each epoch and print the evaluatio
  - **data**: mount a local directory that contains the test documents -> /mypath/my_data:/data/new
 
 You can also set up the environment locally by installing the requirements via `pip3 install -r requirments.txt`. Then you can use the scripts `run_transcripts_bert.py` for training and `predict_transcripts_bert.py` for inference. You can also work with the jupyter notebook that offers additional comments.
-
-
-## Machine learning models for download
-
-The trained models can be found and loaded via their variable codes in dockerhub:
-
- - Suicide death (completed suicide): https://huggingface.co/HubertBaginski/bert-suicide-death-completed
- - Celebrity suicide: https://huggingface.co/HubertBaginski/bert-celebrity-suicide
- - Alternatives to suicide: https://huggingface.co/HubertBaginski/bert-alternatives-to-suicide
- - Monocausality: https://huggingface.co/HubertBaginski/bert-monocausality
- - Positive outcome of suicidal crisis: https://huggingface.co/HubertBaginski/bert-positive-outcome-crisis
- - Healing story: https://huggingface.co/HubertBaginski/bert-healing-story
- - Suicidal ideation: https://huggingface.co/HubertBaginski/bert-suicidal-ideation
- - Problem vs. Solution focus: https://huggingface.co/HubertBaginski/bert-problem-or-solution
- - Enhancing myths: https://huggingface.co/HubertBaginski/bert-enhancing-myths
- - Main focus: https://huggingface.co/HubertBaginski/bert-main-focus
