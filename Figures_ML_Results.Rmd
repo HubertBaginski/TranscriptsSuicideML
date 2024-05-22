@@ -2,7 +2,8 @@
 title: "Figures ML Results"
 author: "Hannah Metzler"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document: 
    df_print: kable
 ---
 
@@ -21,7 +22,7 @@ rm(list=ls())
 ```{r figure settings, include=FALSE}
 cols = c(rev(brewer.pal(12,"Set3")), "violetred4", "cornflowerblue")
 #text size
-s=10
+s=9
 # s = 5 #for paper png figures JMIR, 15 within Rstudio or for pdfs
 # change F1 to F subscript 1 in figures with facet_wrapt
 facet_labels <- as_labeller(c(Precision = "Precision", Recall = "Recall",F1="F[1]"), default = label_parsed)
@@ -39,14 +40,15 @@ macro = macro %>%
   mutate(Model = factor(Model, levels =c("Majority", "Tf-idf","BERT"), labels = c("Majority", "Tf-idf","BERT")), 
          Classification.task = factor(Classification.task, levels = order_tasks, labels = order_tasks),
          Dataset = relevel(factor(Dataset), "Validation"),
-         Difficulty =  rep(rep(difficulty, each=3), 2)) #repeat per model (3) and per validation/test set  
+         Difficulty =  rep(rep(difficulty, each=3), 2),
+         Model = fct_recode(Model, "Tf-idf & SVM" = "Tf-idf")) #repeat per model (3) and per validation/test set  
+  
 
 #load intra class data
 intra <- read.csv("results/Intraclass_performance.csv")  %>% 
    mutate(Model = factor(Model, levels =c("Tf-idf & SVM","BERT"), labels = c("Tf-idf & SVM","BERT")), 
          Classification.task = factor(Classification.task, levels = order_tasks, labels = order_tasks), 
-         Difficulty =  c(rep("Level 1", 2*2*2), rep("Level 2", 3*2*2), rep("Level 3", 3*2*2), rep("Level 4", 1*4*2), rep("Level 4", 1*14*2))) %>% #always: variables*category*models(2).
-  mutate(Model = fct_recode(Model, "Tf-idf" = "Tf-idf & SVM")) 
+         Difficulty =  c(rep("Level 1", 2*2*2), rep("Level 2", 3*2*2), rep("Level 3", 3*2*2), rep("Level 4", 1*4*2), rep("Level 4", 1*14*2))) #always: variables*category*models(2).
 
 
 # load sample size per category data
@@ -64,7 +66,7 @@ ncat = ncat %>%
   mutate(Classification.task = factor(Classification.task, levels = order_tasks, labels = order_tasks))
 ```
 
-```{r, load format data, results=FALSE, cache=TRUE}
+```{r, results=FALSE, cache=TRUE}
 # format/select data for figures #####
 
 #macro
@@ -194,7 +196,7 @@ combined = ggarrange(
  heights= c(0.45, 0.55), nrow=2, legend = "none"
 )
 combined
-# ggsave('./figures/Fig1_n_per_category_all_trainingset.png', combined, width=7, height=5, dpi=300)
+ggsave('./figures/Fig1_n_per_category_all_trainingset.tiff', combined, width=7, height=5, dpi=300)
 ```
 
 # Model comparison per task: macro-average
@@ -207,10 +209,10 @@ plot = ggplot(filter(macro_plot, Dataset == "Test"), aes(x=Metric, y = Score, fi
   scale_colour_manual(values=cols, name="")+
   # coord_cartesian(ylim= c(0.6, 0.80))+ # to zoom in
   theme_bw() +  
-  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
+  theme(legend.position="top", text=element_text(size=9), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 plot
-# ggsave('./figures/Fig2_Model_comparison_testset_permetric.png', plot, width=7, height=4.5, dpi=300)
+ggsave('./figures/Fig2_Model_comparison_testset_permetric.tiff', plot, width=7, height=4.5, dpi=300)
 ```
 
 ## Rank difficulty list macro-F1
@@ -227,15 +229,15 @@ as.data.frame(f1_macro %>%   arrange(desc(Score)))
 # Compare performance on test and validation data set
 
 ```{r, fig.height=8, fig.width=7}
-tfidf = ggplot(filter(macro_plot, Model == "Tf-idf"), aes(x=Metric, y = Score, fill=Dataset, colour = Dataset)) + #dataset and variables to plot
+tfidf = ggplot(filter(macro_plot, Model == "Tf-idf & SVM"), aes(x=Metric, y = Score, fill=Dataset, colour = Dataset)) + #dataset and variables to plot
   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
   facet_wrap(~Classification.task, ncol=5)+
-  ggtitle("Tf-idf")+
+  ggtitle("Tf-idf & SVM")+
   scale_fill_manual(values=(cols), name="")+
   scale_colour_manual(values=cols, name="")+
   # coord_cartesian(ylim= c(0.5, 0.85))+ # to zoom in
   theme_bw() +  
-  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
+  theme(legend.position="top", text=element_text(size=9), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 bert = ggplot(filter(macro_plot, Model == "BERT"), aes(x=Metric, y = Score, fill=Dataset, colour = Dataset)) + #dataset and variables to plot
   geom_bar(stat="identity", position = position_dodge2(width = 0.8))+
@@ -245,11 +247,11 @@ bert = ggplot(filter(macro_plot, Model == "BERT"), aes(x=Metric, y = Score, fill
   scale_colour_manual(values=cols, name="")+
   # coord_cartesian(ylim= c(0.5, 0.85))+ # to zoom in
   theme_bw() +  
-  theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
+  theme(legend.position="top", text=element_text(size=9), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust=1)) #rotate x-axis tick labels
 combined = ggarrange(tfidf, bert, ncol=1, common.legend=T, labels=c("A", "B"))
 combined
- # ggsave('./figures/FigS1_test_vs_validation_performance.png', combined, width=7, height=8, dpi=300)
+ggsave('./figures/FigS1_test_vs_validation_performance.png', combined, width=7, height=8, dpi=300)
 ```
 
 # Intra-class performances
@@ -312,7 +314,7 @@ plot_mf = ggplot(df_mf, aes(x=Categories, y = Score, fill=Metric:Model, colour=M
   theme(legend.position="top", text=element_text(size=s), plot.margin = margin(rep(0.4,4), unit="cm"), axis.title.x = element_blank(), axis.text.x = element_text(angle = 45, hjust=1))
   # guides(fill=guide_legend(nrow=2,byrow=TRUE))
 plot_mf
-# ggsave('./figures/Fig3_intraclass_performance_testset_problem_vs_solution.png', plot, width=7, height=4.5, dpi=300)
+ggsave('./figures/Fig3_intraclass_performance_testset_problem_vs_solution.png', plot, width=7, height=4.5, dpi=300)
 ```
 
 ## Combined plot
@@ -353,12 +355,12 @@ corrn = ggplot(intra_n)+
   labs(x = "Class size n", y = "Performance")+
   theme(text=element_text(size=s+1), plot.margin = margin(rep(0.4,4), unit="cm"))
 corrn
- # ggsave('./figures/Fig4_correlation_n_performance_multicolors_trainingdataset.png', corrn, width=7.5, height=5.2, dpi=300)
+ ggsave('./figures/Fig4_correlation_n_performance_multicolors_trainingdataset.png', corrn, width=7.5, height=5.2, dpi=300)
 ```
 
 ```{r}
-cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="Tf-idf"& n>50))
-cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="Tf-idf" & n>50))
+cor.test(~Score+n, data = filter(intra_n, Metric == "Precision" & Model =="Tf-idf & SVM"& n>50))
+cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="Tf-idf & SVM" & n>50))
 
 cor.test(~Scor<e+n, data = filter(intra_n, Metric == "Precision" & Model =="BERT" & n<50))
 cor.test(~Score+n, data = filter(intra_n, Metric == "Recall" & Model =="BERT"))
