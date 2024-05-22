@@ -15,6 +15,12 @@
     - Enhancing myths: https://huggingface.co/HubertBaginski/bert-enhancing-myths
     - Main focus: https://huggingface.co/HubertBaginski/bert-main-focus
 
+## Code
+
+- To reproduce figures in the paper: Figures_ML_Results.Rmd (in R)
+- For model training: predict_transcripts_bert.py, run_transcripts_bert.py
+- How many transcripts were analysed? descriptive_stats_transcripts.Rmd
+ 
 ## Data
 
 Because the transcripts of media broadcasts are proprietary data (by Brandwatch) we could not share the training data with the public. If you want to train your own models, make sure to add a **/data/new** directory that contains raw text files. We provide a sample text file for reference. You can upload your own data and run it through the train or predict pipeline to create your own results.
